@@ -1,5 +1,6 @@
 mod smart_house;
 
+use std::borrow::Borrow;
 use crate::smart_house::{
     info_provider::{BorrowingDeviceInfoProvider, OwningDeviceInfoProvider},
     smart_device::{SmartSocket, SmartThermometer},
@@ -8,6 +9,7 @@ use crate::smart_house::{
 
 const LIVING_ROOM: &str = "Гостиная";
 const BED_ROOM: &str = "Спальня";
+const EMPTY_ROOM: &str = "-";
 
 fn main() {
     // Инициализация устройств
@@ -33,6 +35,13 @@ fn main() {
         .insert(String::from("Floor"), Box::new(SmartThermometer {}));
 
     house.rooms.insert(String::from(BED_ROOM), bed_room);
+
+    let mut empty_room = Room::new();
+    empty_room.devices.insert("DevToDel".to_string(), Box::new(SmartThermometer {}));
+    empty_room.devices.remove("DevToDel");
+
+    house.rooms.insert(String::from(EMPTY_ROOM), empty_room);
+    house.rooms.remove(EMPTY_ROOM);
 
     println!("House: {:?}", house.name);
     println!("Rooms: {:?}", house.get_rooms());
